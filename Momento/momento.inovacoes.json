@@ -1,0 +1,75 @@
+[{
+  "_id": {
+    "$oid": "66f1d2d77130a821847c1fa7"
+  },
+  "nome": "Plataforma de Aprendizado Online",
+  "descricao": "Uma plataforma interativa para cursos online, com recursos de gamificação.",
+  "dataLancamento": {
+    "$date": "2023-01-15T00:00:00.000Z"
+  },
+  "equipeResponsavel": [
+    "Desenvolvimento",
+    "Design"
+  ],
+  "impactoEstimado": "Aumentar a adesão ao aprendizado em 30%."
+},
+{
+  "_id": {
+    "$oid": "66f1d2d77130a821847c1fa8"
+  },
+  "nome": "Sistema de Atendimento ao Cliente com IA",
+  "descricao": "Chatbot inteligente para suporte ao cliente 24/7, melhorando a experiência do usuário.",
+  "dataLancamento": {
+    "$date": "2023-03-10T00:00:00.000Z"
+  },
+  "equipeResponsavel": [
+    "TI",
+    "Suporte"
+  ],
+  "impactoEstimado": "Reduzir o tempo de espera em 50%."
+},
+{
+  "_id": {
+    "$oid": "66f1d2d77130a821847c1fa9"
+  },
+  "nome": "Aplicativo de Gestão de Tarefas",
+  "descricao": "Aplicativo que integra gerenciamento de tarefas com calendário e lembretes.",
+  "dataLancamento": {
+    "$date": "2023-05-05T00:00:00.000Z"
+  },
+  "equipeResponsavel": [
+    "Desenvolvimento",
+    "Produto"
+  ],
+  "impactoEstimado": "Aumentar a produtividade em 20%."
+},
+{
+  "_id": {
+    "$oid": "66f1d2d77130a821847c1faa"
+  },
+  "nome": "Solução de E-commerce Personalizada",
+  "descricao": "Plataforma de e-commerce com recomendações personalizadas para usuários.",
+  "dataLancamento": {
+    "$date": "2023-07-22T00:00:00.000Z"
+  },
+  "equipeResponsavel": [
+    "Marketing",
+    "Desenvolvimento"
+  ],
+  "impactoEstimado": "Aumentar as vendas em 25%."
+},
+{
+  "_id": {
+    "$oid": "66f1d2d77130a821847c1fab"
+  },
+  "nome": "Sistema de Gestão de Projetos",
+  "descricao": "Ferramenta para gestão de projetos com visualização em Kanban e relatórios de progresso.",
+  "dataLancamento": {
+    "$date": "2023-09-01T00:00:00.000Z"
+  },
+  "equipeResponsavel": [
+    "Gestão",
+    "Desenvolvimento"
+  ],
+  "impactoEstimado": "Melhorar a eficiência em 15%."
+}]
