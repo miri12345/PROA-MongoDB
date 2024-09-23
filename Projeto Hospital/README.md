@@ -54,7 +54,7 @@ Contém as informações dos enfermeiros da instituição:
 
 <div>
 </p align="center">
-<img height="550em" src="https://github.com/miri12345/PROA-MongoDB/blob/main/Projeto%20Hospital/image/Diagrama%20Entidade-Relacionamento%20(2).png" />
+<img height="550em" src="https://github.com/miri12345/PROA-MongoDB/blob/main/Projeto%20Hospital/Diagrama%20Entidade-Relacionamento.png" />
 
 </div>
 
