@@ -62,7 +62,7 @@ Contém as informações dos enfermeiros da instituição:
 
 1. Consultas do Ano de 2024 e Convênio
 Consulta que retorna todas as consultas realizadas no ano de 2024 sob convênio, bem como o valor médio dessas consultas. 
-```
+```js
        > db.consultas.aggregate([
     { $match: { 
         data: { $gte: ISODate("2024-01-01"), $lte: ISODate("2024-12-31") },
@@ -81,7 +81,7 @@ Consulta que retorna todas as consultas realizadas no ano de 2024 sob convênio,
 2. Internações com Alta Posterior à Data Prevista
 Consulta que busca todas as internações em que a data efetiva de alta foi posterior à data prevista.
 
-```
+```js
 > db.internacoes.find({ $expr: { $gt: ["$data_efetiva_alta", "$data_prevista_alta"] } });
 (Alguns dos resultados)
 < {
@@ -128,7 +128,7 @@ Consulta que busca todas as internações em que a data efetiva de alta foi post
 3. Primeira Consulta com Receituário Associado
 Retorna o receituário completo da primeira consulta registrada que possui medicamentos receitados.
 
-```
+```js
 > db.consultas.aggregate([
     { $match: { "receita.medicamentos": { $exists: true, $not: { $size: 0 } } } },
     { $sort: { data: 1 } },
@@ -159,7 +159,7 @@ Retorna o receituário completo da primeira consulta registrada que possui medic
 4. Consulta de Maior e Menor Valor (sem Convênio)
 Agrega os dados da consulta de maior e menor valor que não foram realizadas sob convênio.
 
-```
+```js
 > db.consultas.aggregate([
     { $match: { conveniada: false } },
     { $facet: {
@@ -229,7 +229,7 @@ Agrega os dados da consulta de maior e menor valor que não foram realizadas sob
 5. Cálculo do Total da Internação
 Calcula o total da internação a partir do número de dias internado e o valor da diária do quarto utilizado.
 
-```
+```js
 > db.internacoes.aggregate([
     {
         $addFields: {
@@ -276,7 +276,7 @@ Calcula o total da internação a partir do número de dias internado e o valor 
 6. Internações em Quartos do Tipo "Apartamento"
 Retorna todas as internações realizadas em quartos do tipo "apartamento", mostrando data de entrada, procedimentos e o número do quarto.
 
-```
+```js
 > db.internacoes.aggregate([
     {
         $lookup: {
@@ -336,21 +336,21 @@ Retorna todas as internações realizadas em quartos do tipo "apartamento", most
 7. Consultas de Pacientes Menores de 18 Anos (exceto Pediatria)
 Retorna o nome do paciente, a data da consulta e a especialidade médica para todos os pacientes menores de 18 anos que realizaram consultas, exceto aqueles cuja especialidade era pediatria.
 
-```
+```js
 
 ```
 
 8. Internações Realizadas por Médicos de Gastroenterologia
 Consulta que retorna o nome do paciente, nome do médico, data de entrada e procedimentos para internações realizadas em quartos do tipo "enfermaria" por médicos especializados em gastroenterologia.
 
-```
+```js
 
 ```
 
 9. Quantidade de Consultas por Médico
 Agrega a quantidade de consultas realizadas por cada médico, retornando o nome do médico, seu CRM e o total de consultas.
 
-```
+```js
 > db.consultas.aggregate([
     {
         $group: {
@@ -411,7 +411,7 @@ Retorna todos os médicos que possuem "Gabriel" no nome.
 11. Enfermeiros Envolvidos em Mais de Uma Internação
 Busca os enfermeiros que participaram de mais de uma internação, retornando seus nomes, COREN e o número total de internações.
 
-```
+```js
 > db.internacoes.aggregate([
     { $unwind: "$enfermeiro_id" }, 
     {
