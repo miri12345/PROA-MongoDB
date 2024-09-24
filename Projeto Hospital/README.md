@@ -403,9 +403,9 @@ Agrega a quantidade de consultas realizadas por cada médico, retornando o nome 
 10. Médicos com Nome "Gabriel"
 Retorna todos os médicos que possuem "Gabriel" no nome.
 
-```
+```js
 > db.medicos.find({ nome: /Gabriel/ });
-()
+
 ```
 
 11. Enfermeiros Envolvidos em Mais de Uma Internação
