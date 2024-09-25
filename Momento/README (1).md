@@ -5,14 +5,14 @@ Contém a base de indicados da empresa Momento para treinar consultas complexas 
 Vamos fazer algumas perguntas para brincar de análise exploratória de dados com MongoDB.
 
 * Quantos funcionarios da empresa Momento trabalham no departamento de vendas?
- ```
+ ```js
   > db.funcionarios.countDocuments({ departamento: ObjectId('85992103f9b3e0b3b3c1fe71') });
 
   < 10
 ```
 * Inclua suas próprias informações no departamento de Tecnologia da empresa.
 
-```
+```js
   > db.funcionarios.insertOne({
   nome: 'Miriã Moreno',
   telefone: '11 91116-1868',
@@ -30,18 +30,18 @@ Vamos fazer algumas perguntas para brincar de análise exploratória de dados co
 
 * Agora diga, quantos funcionários temos ao total na empresa?
 
-```
+```js
   > db.funcionarios.countDocuments();
   < 24
 ```
 
 * E quanto ao Departamento de Tecnologia?
-```
+```js
 > db.funcionarios.countDocuments({ departamento: ObjectId('85992103f9b3e0b3b3c1fe74') });
 < 6
 ```
 * Qual a média salarial do departamento de tecnologia?
-```
+```js
 > db.funcionarios.aggregate([
     { $match: { departamento: ObjectId('85992103f9b3e0b3b3c1fe74') } },
     { $group: { _id: null, mediaSalarial: { $avg: "$salario" } } }
@@ -52,7 +52,7 @@ Vamos fazer algumas perguntas para brincar de análise exploratória de dados co
 }
 ```
 * Quanto o departamento de Vendas gasta em salários?
-```
+```js
 > db.funcionarios.aggregate([
     { $match: { departamento: ObjectId('85992103f9b3e0b3b3c1fe71') } },
     { $group: { _id: null, totalSalarios: { $sum: "$salario" } } }
@@ -64,7 +64,7 @@ Vamos fazer algumas perguntas para brincar de análise exploratória de dados co
 ```
 * Um novo departamento foi criado. O departamento de Inovações.
   Ele será locado no Brasil. Por favor, adicione-o no banco de dados da empresa colocando quaisquer informações que você achar relevantes.
-```
+```js
  > db.inovacoes.insertMany([
     {
         nome: 'Plataforma de Aprendizado Online',
@@ -86,7 +86,7 @@ Vamos fazer algumas perguntas para brincar de análise exploratória de dados co
 }
 ```
 * O departamento de Inovações está sem funcionários. Inclua alguns colegas de turma nesse departamento.
-```
+```js
 Um exemplo
 > db.funcionarios.insertMany([
     {
@@ -112,13 +112,13 @@ Um exemplo
 
 * Quantos funcionarios a empresa Momento tem agora?
 
-```
+```js
   > db.funcionarios.countDocuments();
   < 29
 ```
 
 * Quantos funcionários da empresa Momento possuem conjuges?
-```
+```js
 > db.funcionarios.countDocuments({
     "dependentes.conjuge": { $exists: true }  // Verifica se o campo conjuge existe
 });
@@ -126,7 +126,7 @@ Um exemplo
 ```
 
 * Qual a média salarial dos funcionários da empresa Momento, excluindo-se o CEO?
-```
+```js
 > db.funcionarios.aggregate([
     {
         $match: {
@@ -146,28 +146,8 @@ Um exemplo
 }
 ```
 
-* Qual a média salarial do departamento de tecnologia?
-```
-> db.funcionarios.aggregate([
-    {
-    $match:{
-        departamento: ObjectId("85992103f9b3e0b3b3c1fe74")
-    }
-    }, {
-    $group: 
-    {
-        _id: null,
-        avg_val:{ $avg:"$salario" }
-    }
-    }
-  ])
-< {
-  _id: null,
-  avg_val: 4283.333333333333
-  }
-```
 * Qual o departamento com a maior média salarial?
-```
+```js
 > db.funcionarios.aggregate([
     {
         $group: {
@@ -206,7 +186,7 @@ Um exemplo
 }
 ```
 * Qual o departamento com o menor número de funcionários?
-```
+```js
 > db.funcionarios.aggregate([
     {
         $group: {
@@ -245,7 +225,7 @@ Um exemplo
 }
 ```
 * Pensando na relação quantidade e valor unitario, qual o produto mais valioso da empresa?
-```
+```js
 > db.escritorios.aggregate([
     { 
         "$unwind": "$suprimentos" 
@@ -288,7 +268,7 @@ Um exemplo
   }
 ```
 * Qual o produto mais vendido da empresa?
-```
+```js
 > db.vendas.aggregate([
     {
         $group: {
@@ -309,7 +289,7 @@ Um exemplo
 }
 ```
 * Qual o produto menos vendido da empresa?
-```
+```js
 > db.vendas.aggregate([
     {
         $group: {
