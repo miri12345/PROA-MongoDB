@@ -90,10 +90,91 @@ db.internacoes.aggregate([
 
 /* 7. Nome do paciente, data da consulta e especialidade de todas as consultas em que os pacientes eram menores de 18 anos na 
 data da consulta e cuja especialidade não seja “pediatria”, ordenando por data de realização da consulta*/
+db.consultas.aggregate([
+    {
+        $lookup: {
+            from: "pacientes", 
+            localField: "paciente_id", 
+            foreignField: "_id", 
+            as: "paciente_info" 
+        }
+    },
+    {
+        $unwind: "$paciente_info" 
+    },
+    {
+        $addFields: {
+            idade_paciente: {
+                $dateDiff: {
+                    startDate: "$paciente_info.data_nascimento", 
+                    endDate: "$data",
+                    unit: "year" 
+                }
+            }
+        }
+    },
+    {
+        $match: {
+            idade_paciente: { $lt: 18 },
+            especialidade_buscada: { $ne: "pediatria" } 
+        }
+    },
+    {
+        $project: {
+            nome_paciente: "$paciente_info.nome", 
+            data_consulta: "$data", 
+            especialidade: "$especialidade_buscada" 
+        }
+    },
+    {
+        $sort: { data_consulta: 1 }
+    }
+]);
 
 /* 8. Nome do paciente, nome do médico, data da internação e procedimentos das internações realizadas por médicos da especialidade 
 “gastroenterologia”, que tenham acontecido em “enfermaria”*/
-
+db.internacoes.aggregate([
+    {
+        $lookup: {
+            "from": "pacientes", 
+            "localField": "paciente_id", 
+            "foreignField": "_id", 
+            "as": "paciente_info" 
+        }
+    },
+    {
+        $unwind: "$paciente_info" 
+    },
+    {
+        $lookup: {
+            "from": "medicos", 
+            "localField": "medico_id", 
+            "foreignField": "_id", 
+            "as": "medico_info" 
+        }
+    },
+    {
+        $unwind: "$medico_info" 
+    }, 
+    {
+        $match: {
+            "medico_info.especialidades": "gastroenterologia",
+            $or: [
+                { "quarto_numero": 103 },
+                { "quarto_numero": 104 }
+            ]
+        }
+    },
+    {
+        $project: {
+            "_id": 0,
+            "nome_paciente": "$paciente_info.nome",
+            "nome_medico": "$medico_info.nome",
+            "data_internacao": "$data_entrada",
+            "procedimentos": "$procedimentos"
+        }
+    }
+])
 
 
 // 9. Os nomes dos médicos, seus CRMs e a quantidade de consultas que cada um realizou
@@ -131,18 +212,37 @@ db.medicos.find({ nome: /Gabriel/ });
 // 11. Os nomes, CORENs e número de internações de enfermeiros que participaram de mais de uma internação
 
 db.internacoes.aggregate([
-    { $unwind: "$enfermeiro_id" }, 
+    { 
+        $unwind: "$enfermeiro_id" 
+    }, 
     {
         $group: {
-            _id: "$enfermeiro_id", 
+            _id: "$enfermeiro_id",
             totalInternacoes: { $sum: 1 } 
         }
     },
-    { $match: { totalInternacoes: { $gt: 1 } } }, 
+    { 
+        $match: {
+             totalInternacoes: { $gte: 2 } 
+        } 
+    },
+    {
+        $lookup: {
+            "from": "enfermeiros", 
+            "localField": "_id", 
+            "foreignField": "_id", 
+            "as": "enfermeiro"
+        }
+    },
+    {
+        $unwind: "$enfermeiro"
+    },
     {
         $project: {
-            enfermeiro_id: "$_id",
+            _id: 0,
+            enfermeiro_nome: "$enfermeiro.nome",
+            enfermeiro_CRE: "$enfermeiro.documentos.COREN",
             totalInternacoes: 1 
         }
     }
-]);
+])
