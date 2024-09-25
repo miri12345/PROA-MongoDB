@@ -76,6 +76,63 @@ Consulta que retorna todas as consultas realizadas no ano de 2024 sob convênio,
     { $project: { _id: 0, valorMedio: 1, consultas: 1 } }
 ]);
 <  valorMedio: 219.54545454545453
+(Exemplo de alguns resultados de consultas)
+< consultas: [
+    {
+      _id: ObjectId('66f1a79a4fe19755df1eba08'),
+      data: 2024-06-25T00:00:00.000Z,
+      medico_id: ObjectId('66e96ae976efecbc5e470c24'),
+      paciente_id: ObjectId('66e96b0576efecbc5e470c28'),
+      valor: 200,
+      conveniada: true,
+      especialidade_buscada: 'Clínica Geral',
+      descricao: 'Paciente com febre e tosse',
+      receita: {
+        medicamentos: [
+          {
+            nome: 'Paracetamol comprimidos',
+            quantidade: 10,
+            instrucoes: 'Tomar 1 comprimido a cada 8 horas'
+          },
+          {
+            nome: 'Ibuprofeno comprimidos',
+            quantidade: 12,
+            instrucoes: 'Tomar 1 comprimido a cada 12 horas'
+          }
+        ],
+        tratamentos: [
+          {
+            nome: 'Inalação com soro fisiológico',
+            frequencia: '2 vezes ao dia'
+          }
+        ]
+      }
+    },
+    {
+      _id: ObjectId('66f1a79a4fe19755df1eba0a'),
+      data: 2024-09-30T00:00:00.000Z,
+      medico_id: ObjectId('66e96ae976efecbc5e470c26'),
+      paciente_id: ObjectId('66e96b0576efecbc5e470c30'),
+      valor: 250,
+      conveniada: true,
+      especialidade_buscada: 'Dermatologia',
+      descricao: 'Paciente com erupção cutânea',
+      receita: {
+        medicamentos: [
+          {
+            nome: 'Antialérgico',
+            quantidade: 10,
+            instrucoes: 'Tomar 1 comprimido ao dia'
+          }
+        ],
+        tratamentos: [
+          {
+            nome: 'Aplicação de creme hidratante',
+            frequencia: '2 vezes ao dia'
+          }
+        ]
+      }
+    },
 
 ```
 2. Internações com Alta Posterior à Data Prevista
