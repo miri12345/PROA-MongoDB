@@ -394,6 +394,70 @@ Retorna todas as internações realizadas em quartos do tipo "apartamento", most
 Retorna o nome do paciente, a data da consulta e a especialidade médica para todos os pacientes menores de 18 anos que realizaram consultas, exceto aqueles cuja especialidade era pediatria.
 
 ```js
+> db.consultas.aggregate([
+    {
+        $lookup: {
+            from: "pacientes", 
+            localField: "paciente_id", 
+            foreignField: "_id", 
+            as: "paciente_info" 
+        }
+    },
+    {
+        $unwind: "$paciente_info" 
+    },
+    {
+        $addFields: {
+            idade_paciente: {
+                $dateDiff: {
+                    startDate: "$paciente_info.data_nascimento", 
+                    endDate: "$data",
+                    unit: "year" 
+                }
+            }
+        }
+    },
+    {
+        $match: {
+            idade_paciente: { $lt: 18 },
+            especialidade_buscada: { $ne: "pediatria" } 
+        }
+    },
+    {
+        $project: {
+            nome_paciente: "$paciente_info.nome", 
+            data_consulta: "$data", 
+            especialidade: "$especialidade_buscada" 
+        }
+    },
+    {
+        $sort: { data_consulta: 1 }
+    }
+]);
+< {
+  _id: ObjectId('66f1a79a4fe19755df1eba1a'),
+  nome_paciente: 'João Oliveira',
+  data_consulta: 2023-05-30T00:00:00.000Z,
+  especialidade: 'Pediatria'
+}
+{
+  _id: ObjectId('66f1a79a4fe19755df1eba16'),
+  nome_paciente: 'Luciana Torres',
+  data_consulta: 2024-07-14T00:00:00.000Z,
+  especialidade: 'Nutrição'
+}
+{
+  _id: ObjectId('66f1a79a4fe19755df1eba15'),
+  nome_paciente: 'João Oliveira',
+  data_consulta: 2024-11-25T00:00:00.000Z,
+  especialidade: 'Fisioterapia'
+}
+{
+  _id: ObjectId('66f1a79a4fe19755df1eba1b'),
+  nome_paciente: 'Luciana Torres',
+  data_consulta: 2024-12-12T00:00:00.000Z,
+  especialidade: 'Gastroenterologia'
+}
 
 ```
 
@@ -401,7 +465,57 @@ Retorna o nome do paciente, a data da consulta e a especialidade médica para to
 Consulta que retorna o nome do paciente, nome do médico, data de entrada e procedimentos para internações realizadas em quartos do tipo "enfermaria" por médicos especializados em gastroenterologia.
 
 ```js
-
+> db.internacoes.aggregate([
+    {
+        $lookup: {
+            "from": "pacientes", 
+            "localField": "paciente_id", 
+            "foreignField": "_id", 
+            "as": "paciente_info" 
+        }
+    },
+    {
+        $unwind: "$paciente_info" 
+    },
+    {
+        $lookup: {
+            "from": "medicos", 
+            "localField": "medico_id", 
+            "foreignField": "_id", 
+            "as": "medico_info" 
+        }
+    },
+    {
+        $unwind: "$medico_info" 
+    }, 
+    {
+        $match: {
+            "medico_info.especialidades": "Gastroenterologia",
+            $or: [
+                { "quarto_numero": 103 },
+                { "quarto_numero": 104 }
+            ]
+        }
+    },
+    {
+        $project: {
+            "_id": 0,
+            "nome_paciente": "$paciente_info.nome",
+            "nome_medico": "$medico_info.nome",
+            "data_internacao": "$data_entrada",
+            "procedimentos": "$procedimentos"
+        }
+    }
+])
+< {
+  nome_paciente: 'Juliana Mendes',
+  nome_medico: 'Dr. Lucas Costa',
+  data_internacao: 2022-01-10T00:00:00.000Z,
+  procedimentos: [
+    'Internação para observação',
+    'Exame laboratorial'
+  ]
+}
 ```
 
 9. Quantidade de Consultas por Médico
@@ -434,7 +548,7 @@ Agrega a quantidade de consultas realizadas por cada médico, retornando o nome 
         }
     }
 ]);
-(Alguns dos resultados)
+(Alguns exemplos de retorno)
 < {
   _id: ObjectId('66e96ae976efecbc5e470c28'),
   totalConsultas: 2,
@@ -462,6 +576,27 @@ Retorna todos os médicos que possuem "Gabriel" no nome.
 
 ```js
 > db.medicos.find({ nome: /Gabriel/ });
+(Alguns exemplos de retorno)
+< {
+  _id: ObjectId('66e96ae976efecbc5e470c2e'),
+  nome: 'Dr. Gabriel Almeida',
+  data_nascimento: 1985-05-20T00:00:00.000Z,
+  especialidades: [
+    'Cardiologia',
+    'Gastroenterologia'
+  ],
+  tipo: 'Especialista',
+  contato: {
+    telefone: '11987654321',
+    email: 'gabriel.almeida@hospital.com'
+  },
+  documentos: {
+    CPF: '12345678901',
+    RG: 'SP1234567',
+    CRM: 'SP123456'
+  },
+  'Em atividade': true
+}
 
 ```
 
@@ -470,41 +605,60 @@ Busca os enfermeiros que participaram de mais de uma internação, retornando se
 
 ```js
 > db.internacoes.aggregate([
-    { $unwind: "$enfermeiro_id" }, 
+    { 
+        $unwind: "$enfermeiro_id" 
+    }, 
     {
         $group: {
-            _id: "$enfermeiro_id", 
+            _id: "$enfermeiro_id",
             totalInternacoes: { $sum: 1 } 
         }
     },
-    { $match: { totalInternacoes: { $gt: 1 } } }, 
+    { 
+        $match: {
+             totalInternacoes: { $gte: 2 } 
+        } 
+    },
+    {
+        $lookup: {
+            "from": "enfermeiros", 
+            "localField": "_id", 
+            "foreignField": "_id", 
+            "as": "enfermeiro"
+        }
+    },
+    {
+        $unwind: "$enfermeiro"
+    },
     {
         $project: {
-            enfermeiro_id: "$_id",
+            _id: 0,
+            enfermeiro_nome: "$enfermeiro.nome",
+            enfermeiro_COREN: "$enfermeiro.documentos.COREN",
             totalInternacoes: 1 
         }
     }
-]);
+])
 
 < {
-  _id: ObjectId('646f1c8e1b2c4c1d2c8b4577'),
   totalInternacoes: 2,
-  enfermeiro_id: ObjectId('646f1c8e1b2c4c1d2c8b4577')
+  enfermeiro_nome: 'Marcos Ferreira',
+  enfermeiro_COREN: 'COREN-SP 123456'
 }
 {
-  _id: ObjectId('646f1c8e1b2c4c1d2c8b4578'),
   totalInternacoes: 2,
-  enfermeiro_id: ObjectId('646f1c8e1b2c4c1d2c8b4578')
+  enfermeiro_nome: 'Patrícia Rocha',
+  enfermeiro_COREN: 'COREN-AM 246801'
 }
 {
-  _id: ObjectId('646f1c8e1b2c4c1d2c8b4567'),
   totalInternacoes: 2,
-  enfermeiro_id: ObjectId('646f1c8e1b2c4c1d2c8b4567')
+  enfermeiro_nome: 'Ana Souza',
+  enfermeiro_COREN: 'COREN-RJ 789012'
 }
 {
-  _id: ObjectId('646f1c8e1b2c4c1d2c8b4568'),
   totalInternacoes: 2,
-  enfermeiro_id: ObjectId('646f1c8e1b2c4c1d2c8b4568')
+  enfermeiro_nome: 'Rodrigo Martins',
+  enfermeiro_COREN: 'COREN-CE 135790'
 }
 
 ```
