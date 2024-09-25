@@ -241,7 +241,7 @@ db.internacoes.aggregate([
         $project: {
             _id: 0,
             enfermeiro_nome: "$enfermeiro.nome",
-            enfermeiro_CRE: "$enfermeiro.documentos.COREN",
+            enfermeiro_COREN: "$enfermeiro.documentos.COREN",
             totalInternacoes: 1 
         }
     }
