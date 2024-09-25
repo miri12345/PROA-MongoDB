@@ -1,4 +1,4 @@
-# Projeto de Gerenciamento de Consultas e Internações
+# Projeto Hospital Exemplar
 Este projeto tem como objetivo simular o gerenciamento de consultas e internações de uma instituição médica. O banco de dados é estruturado no MongoDB, onde consultas e internações são armazenadas e gerenciadas por meio de diversas consultas e agregações. O sistema foi projetado para gerar relatórios e obter informações específicas sobre pacientes, médicos, internações e consultas, a fim de facilitar a tomada de decisões e o acompanhamento dos processos hospitalares.
 
 ### Estrutura do Projeto
@@ -54,11 +54,18 @@ Contém as informações dos enfermeiros da instituição:
 
 <div>
 </p align="center">
-<img height="550em" src="https://github.com/miri12345/PROA-MongoDB/blob/main/Projeto%20Hospital/Diagrama%20Entidade-Relacionamento.png" />
+<img height="550em" src="https://github.com/miri12345/PROA-MongoDB/blob/main/Projeto%20Hospital%20Exemplar/Diagrama%20Entidade-Relacionamento.png" />
 
 </div>
 
-### Consultas Realizadas
+### Planilha do banco de dados
+<div>
+</p align="center">
+<img height="400em" src="https://github.com/miri12345/PROA-MongoDB/blob/main/Projeto%20Hospital%20Exemplar/Hospital%20Exemplar%20Planilha2.png" />
+
+</div>
+
+## Consultas Realizadas
 
 1. Consultas do Ano de 2024 e Convênio
 Consulta que retorna todas as consultas realizadas no ano de 2024 sob convênio, bem como o valor médio dessas consultas. 
