@@ -158,7 +158,7 @@ db.internacoes.aggregate([
     }, 
     {
         $match: {
-            "medico_info.especialidades": "gastroenterologia",
+            "medico_info.especialidades": "Gastroenterologia",
             $or: [
                 { "quarto_numero": 103 },
                 { "quarto_numero": 104 }
